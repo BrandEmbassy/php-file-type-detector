@@ -41,7 +41,7 @@ class DetectorTest extends TestCase {
     }
 
     /**
-     * @dataProvider filenamesWithTypes()0x
+     * @dataProvider filenamesWithTypes()
      */
     public function testMimetypeGeneration($filename, $expectedType) {
         $this->assertEquals($expectedType[2], Detector::getMimeType($filename));
