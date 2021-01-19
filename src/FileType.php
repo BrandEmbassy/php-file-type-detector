@@ -5,6 +5,9 @@ namespace BrandEmbassy\FileTypeDetector;
 use MabeEnum\Enum;
 use function in_array;
 
+/**
+ * @method string getValue()
+ */
 final class FileType extends Enum
 {
     public const AUDIO = 'audio';
