@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use function array_map;
 use function assert;
 use function fclose;
+use function file_get_contents;
 use function fopen;
 use function fwrite;
 use function implode;
@@ -16,9 +17,9 @@ use function rewind;
 class DetectorTest extends TestCase
 {
     /**
-     * @dataProvider fileNamesWithTypes()
+     * @dataProvider fileNameDataProvider()
      */
-    public function testDetectionByFilename(
+    public function testDetectionByFileName(
         string $fileName,
         string $expectedFileType,
         string $expectedExtension,
@@ -34,7 +35,7 @@ class DetectorTest extends TestCase
     /**
      * @return mixed[][]
      */
-    public function fileNamesWithTypes(): array
+    public function fileNameDataProvider(): array
     {
         return [
             'jpg' => [
@@ -66,7 +67,7 @@ class DetectorTest extends TestCase
 
 
     /**
-     * @dataProvider streamsWithTypes()
+     * @dataProvider binaryStreamDataProvider()
      *
      * @param mixed[] $binary
      */
@@ -96,7 +97,7 @@ class DetectorTest extends TestCase
     /**
      * @return mixed[][]
      */
-    public function streamsWithTypes(): array
+    public function binaryStreamDataProvider(): array
     {
         return [
             'png' => [
@@ -144,17 +145,30 @@ class DetectorTest extends TestCase
 
 
     /**
+     * @dataProvider filePathDataProvider()
+     */
+    public function testDetectionFromContent(
+        string $filePath,
+        string $expectedFileType,
+        string $expectedExtension,
+        string $expectedMimeType
+    ): void {
+        $fileContent = file_get_contents($filePath);
+        assert($fileContent !== false);
+
+        $fileInfo = Detector::detectFromContent($fileContent);
+        assert($fileInfo !== null);
+
+        $this->assertFileInfo($fileInfo, $expectedFileType, $expectedExtension, $expectedMimeType);
+    }
+
+
+    /**
      * @return string[][]
      */
     public function filePathDataProvider(): array
     {
         return [
-            [
-                'filePath' => __DIR__ . '/__fixtures__/text.txt',
-                'expectedFileType' => 'document',
-                'expectedExtension' => 'txt',
-                'expectedMimeType' => 'text/plain',
-            ],
             [
                 'filePath' => __DIR__ . '/__fixtures__/image.png',
                 'expectedFileType' => 'image',

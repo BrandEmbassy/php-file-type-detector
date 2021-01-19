@@ -4,7 +4,11 @@ namespace BrandEmbassy\FileTypeDetector;
 
 use Exception;
 use InvalidArgumentException;
+use function assert;
+use function fopen;
+use function fwrite;
 use function pathinfo;
+use function rewind;
 use function strtolower;
 use const PATHINFO_EXTENSION;
 
@@ -586,6 +590,18 @@ class Detector
     public static function detectFromFilePath(string $filePath): ?FileInfo
     {
         return self::detectByFileName($filePath) ?? self::detectByContent($filePath);
+    }
+
+
+    public static function detectFromContent(string $content): ?FileInfo
+    {
+        $source = fopen('php://memory', 'rb+');
+        assert($source !== false);
+
+        fwrite($source, $content);
+        rewind($source);
+
+        return self::detectByContent($source);
     }
 
 
