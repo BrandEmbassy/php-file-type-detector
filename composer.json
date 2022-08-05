@@ -21,5 +21,10 @@
         "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src --memory-limit=-1",
         "phpunit": "vendor/bin/phpunit src --no-coverage",
         "phpunit-cc": "vendor/bin/phpunit src"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
