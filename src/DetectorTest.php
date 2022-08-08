@@ -14,6 +14,9 @@ use function fwrite;
 use function implode;
 use function is_resource;
 use function rewind;
+use function stream_get_meta_data;
+use function sys_get_temp_dir;
+use function tempnam;
 
 class DetectorTest extends TestCase
 {
