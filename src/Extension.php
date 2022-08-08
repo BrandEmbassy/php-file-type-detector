@@ -3,7 +3,9 @@
 namespace BrandEmbassy\FileTypeDetector;
 
 use InvalidArgumentException;
+use LogicException;
 use MabeEnum\Enum;
+use function sprintf;
 
 /**
  * @method string getValue()
@@ -218,8 +220,12 @@ class Extension extends Enum
     }
 
 
-    public function findMimeType(): ?string
+    public function findMimeType(): string
     {
-        return self::$mimeTypes[$this->getValue()] ?? null;
+        if (!isset(self::$mimeTypes[$this->getValue()])) {
+            throw new LogicException(sprintf('Mime type for extension "%s" does not exist.', $this->getValue()));
+        }
+
+        return self::$mimeTypes[$this->getValue()];
     }
 }

@@ -13,12 +13,12 @@ class FileInfo
     private $extension;
 
     /**
-     * @var FileType|null
+     * @var FileType
      */
     private $fileType;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $mimeType;
 
@@ -43,13 +43,13 @@ class FileInfo
     }
 
 
-    public function getFileType(): ?FileType
+    public function getFileType(): FileType
     {
         return $this->fileType;
     }
 
 
-    public function getMimeType(): ?string
+    public function getMimeType(): string
     {
         return $this->mimeType;
     }

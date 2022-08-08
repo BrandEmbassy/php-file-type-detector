@@ -2,8 +2,10 @@
 
 namespace BrandEmbassy\FileTypeDetector;
 
+use LogicException;
 use MabeEnum\Enum;
 use function in_array;
+use function sprintf;
 
 /**
  * @method string getValue()
@@ -153,7 +155,7 @@ class FileType extends Enum
     ];
 
 
-    public static function findByExtension(Extension $extension): ?self
+    public static function findByExtension(Extension $extension): self
     {
         foreach (self::$extensionsMap as $fileType => $extensions) {
             if (in_array($extension->getValue(), $extensions, true)) {
@@ -161,6 +163,6 @@ class FileType extends Enum
             }
         }
 
-        return null;
+        throw new LogicException(sprintf('File type for extension "%s" does not exist.', $extension->getValue()));
     }
 }

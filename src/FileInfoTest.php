@@ -2,9 +2,7 @@
 
 namespace BrandEmbassy\FileTypeDetector;
 
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use function sprintf;
 
 class FileInfoTest extends TestCase
 {
@@ -15,10 +13,9 @@ class FileInfoTest extends TestCase
     {
         $fileInfo = new FileInfo($extension, true);
 
-        Assert::assertNotNull(
-            $fileInfo->getFileType(),
-            sprintf('Extension "%s" has no file type.', $extension->getValue())
-        );
+        $fileInfo->getFileType();
+
+        $this->expectNotToPerformAssertions();
     }
 
 
@@ -29,10 +26,9 @@ class FileInfoTest extends TestCase
     {
         $fileInfo = new FileInfo($extension, true);
 
-        Assert::assertNotNull(
-            $fileInfo->getMimeType(),
-            sprintf('Extension "%s" has no mime type.', $extension->getValue())
-        );
+        $fileInfo->getMimeType();
+
+        $this->expectNotToPerformAssertions();
     }
 
 
