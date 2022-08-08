@@ -184,6 +184,7 @@ class Extension extends Enum
         self::TSV => 'text/tab-separated-values',
 
         self::_3GP => 'video/3gpp',
+        self::ASF => 'application/vnd.ms-asf',
         self::AVI => 'video/x-msvideo',
         self::FLV => 'video/x-flv',
         self::M4V => 'video/x-m4v',
