@@ -80,8 +80,7 @@ class ContentStream
     public function checkBytes(int $offset, $ethalon): bool
     {
         if ($offset < 0) {
-            $stat = fstat($this->filePointer);
-            $offset = $stat['size'] + $offset;
+            $offset = $this->getSize() + $offset;
         }
         if (!is_array($ethalon)) {
             $ethalon = $this->convertToBytes($ethalon);
@@ -121,8 +120,7 @@ class ContentStream
     public function find(int $offset, array $bytes, int $maxDepth = 512, bool $reverse = false): bool
     {
         if ($offset < 0) {
-            $stat = fstat($this->filePointer);
-            $offset = $stat['size'] + $offset;
+            $offset = $this->getSize() + $offset;
         }
         $i = 0;
         while (abs($i) <= $maxDepth) {
@@ -145,6 +143,14 @@ class ContentStream
         }
 
         return false;
+    }
+
+
+    private function getSize(): int
+    {
+        $stat = fstat($this->filePointer);
+
+        return $stat['size'];
     }
 
 
