@@ -31,8 +31,8 @@ class FileInfo
     public function __construct(Extension $extension, bool $isCreatedFromFileName)
     {
         $this->extension = $extension;
-        $this->fileType = FileType::findByExtension($extension);
-        $this->mimeType = $extension->findMimeType();
+        $this->fileType = FileType::getByExtension($extension);
+        $this->mimeType = $extension->getMimeType();
         $this->isCreatedFromFileName = $isCreatedFromFileName;
     }
 

@@ -6,6 +6,8 @@ use LogicException;
 use MabeEnum\Enum;
 use function in_array;
 use function sprintf;
+use function trigger_error;
+use const E_USER_DEPRECATED;
 
 /**
  * @method string getValue()
@@ -155,7 +157,7 @@ class FileType extends Enum
     ];
 
 
-    public static function findByExtension(Extension $extension): self
+    public static function getByExtension(Extension $extension): self
     {
         foreach (self::$extensionsMap as $fileType => $extensions) {
             if (in_array($extension->getValue(), $extensions, true)) {
@@ -164,5 +166,18 @@ class FileType extends Enum
         }
 
         throw new LogicException(sprintf('File type for extension "%s" does not exist.', $extension->getValue()));
+    }
+
+
+    /**
+     * @deprecated use getByExtension instead
+     *
+     * @see self::getByExtension()
+     */
+    public function findByExtension(Extension $extension): ?self
+    {
+        @trigger_error(sprintf('Method %s is deprecated.', __METHOD__), E_USER_DEPRECATED);
+
+        return self::getByExtension($extension);
     }
 }
