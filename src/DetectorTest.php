@@ -166,6 +166,7 @@ class DetectorTest extends TestCase
 
     /**
      * This tests behavior of Detector on non-seekable streams (eg. HTTP), ZipArchive was used to simulate it locally
+     * The ZIP archive is supposed to contain all other fixtures (same names and content)
      *
      * @dataProvider filePathDataProvider()
      */
