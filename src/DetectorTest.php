@@ -4,6 +4,7 @@ namespace BrandEmbassy\FileTypeDetector;
 
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use ZipArchive;
 use function array_map;
 use function assert;
 use function fclose;
@@ -158,6 +159,33 @@ class DetectorTest extends TestCase
 
         $fileInfo = Detector::detectFromContent($fileContent);
         assert($fileInfo !== null);
+
+        $this->assertFileInfo($fileInfo, $expectedFileType, $expectedExtension, $expectedMimeType);
+    }
+
+
+    /**
+     * This tests behavior of Detector on non-seekable streams (eg. HTTP), ZipArchive was used to simulate it locally
+     *
+     * @dataProvider filePathDataProvider()
+     */
+    public function testDetectionByContentInZipArchive(
+        string $filePath,
+        string $expectedFileType,
+        string $expectedExtension,
+        string $expectedMimeType
+    ): void {
+        $relativeFilePath = substr($filePath, strlen(__DIR__ . '/__fixtures__/'));
+
+        $zipArchive = new ZipArchive();
+        $zipArchive->open(__DIR__ . '/__fixtures__/archive.zip');
+        $stream = $zipArchive->getStream($relativeFilePath);
+
+        $streamMetaData = stream_get_meta_data($stream);
+        Assert::assertFalse($streamMetaData['seekable']);
+
+        $fileInfo = Detector::detectByContent($stream);
+        Assert::assertNotNull($fileInfo);
 
         $this->assertFileInfo($fileInfo, $expectedFileType, $expectedExtension, $expectedMimeType);
     }
