@@ -180,6 +180,8 @@ class DetectorTest extends TestCase
         string $expectedMimeType
     ): void {
         $zipArchiveName = tempnam(sys_get_temp_dir(), 'zip');
+        assert($zipArchiveName !== false);
+
         $zipArchive = new ZipArchive();
         $zipArchive->open($zipArchiveName, ZipArchive::CREATE);
         $zipArchive->addFile($filePath, 'file');
@@ -187,6 +189,7 @@ class DetectorTest extends TestCase
         $zipArchive->open($zipArchiveName);
 
         $stream = $zipArchive->getStream('file');
+        assert($stream !== false);
 
         $streamMetaData = stream_get_meta_data($stream);
         Assert::assertFalse($streamMetaData['seekable']);
