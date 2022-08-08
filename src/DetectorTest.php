@@ -181,6 +181,12 @@ class DetectorTest extends TestCase
                 'expectedExtension' => 'png',
                 'expectedMimeType' => 'image/png',
             ],
+            [
+                'filePath' => __DIR__ . '/__fixtures__/empty.pdf',
+                'expectedFileType' => 'document',
+                'expectedExtension' => 'pdf',
+                'expectedMimeType' => 'application/pdf',
+            ],
         ];
     }
 
