@@ -5,6 +5,7 @@ namespace BrandEmbassy\FileTypeDetector;
 use Exception;
 use function abs;
 use function assert;
+use function count;
 use function fclose;
 use function fgetc;
 use function file_exists;
@@ -28,6 +29,11 @@ class ContentStream
      * @var bool
      */
     protected $openedOutside = false;
+
+    /**
+     * @var bool
+     */
+    protected $cachedAllBytes = false;
 
     /**
      * @var resource
@@ -64,6 +70,7 @@ class ContentStream
 
                     $this->readBytesCache[] = ord($character);
                 }
+                $this->cachedAllBytes = true;
             }
         } else {
             throw new Exception('Unknown source: ' . var_export($source, true) . ' (' . gettype($source) . ')');
@@ -148,6 +155,10 @@ class ContentStream
 
     private function getSize(): int
     {
+        if ($this->cachedAllBytes) {
+            return count($this->readBytesCache);
+        }
+
         $stat = fstat($this->filePointer);
 
         return $stat['size'];
@@ -157,6 +168,10 @@ class ContentStream
     private function readOffset(int $offset): bool
     {
         if (!isset($this->readBytesCache[$offset])) {
+            if ($this->cachedAllBytes) {
+                return false;
+            }
+
             fseek($this->filePointer, $offset, SEEK_SET);
             $character = fgetc($this->filePointer);
 
