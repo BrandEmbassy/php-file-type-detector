@@ -5,6 +5,14 @@ on: [ pull_request, workflow_dispatch ]
 jobs:
   phpstan:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - 7.2
+          - 7.4
+          - 8.0
+          - 8.1
 
     steps:
       - name: Checkout
@@ -13,7 +21,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.2
+          php-version: ${{ matrix.php-version }}
           extensions: mbstring, sockets
 
       - name: Cache composer dependencies
@@ -32,6 +40,12 @@ jobs:
 
   phpcs:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - 7.2
+          - 8.1
 
     steps:
       - name: Checkout
@@ -40,7 +54,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.2
+          php-version: ${{ matrix.php-version }}
           extensions: mbstring, sockets
 
       - name: Cache composer dependencies
@@ -59,6 +73,17 @@ jobs:
 
   phpunit:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        composer-arg:
+          - "install"
+          - "update --prefer-lowest"
+        php-version:
+          - 7.2
+          - 7.4
+          - 8.0
+          - 8.1
 
     steps:
       - name: Checkout
@@ -67,7 +92,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.2
+          php-version: ${{ matrix.php-version }}
           extensions: mbstring, sockets
 
       - name: Cache composer dependencies
@@ -78,7 +103,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist
+        run: composer ${{ matrix.composer-arg }} --prefer-dist
 
       - name: Run tests
         run: composer phpunit
