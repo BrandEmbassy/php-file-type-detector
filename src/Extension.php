@@ -134,6 +134,7 @@ class Extension extends Enum
         self::DAR => 'application/x-dar',
 
         self::ISO => 'application/x-iso9660-image',
+        self::VHD => 'application/x-vhd',
 
         self::ACCDB => 'application/x-msaccess',
         self::MDB => 'application/x-msaccess',
