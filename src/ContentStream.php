@@ -35,9 +35,9 @@ class ContentStream
     protected $filePointer;
 
     /**
-     * @var mixed[]
+     * @var int[]
      */
-    protected $read = [];
+    protected $readBytesCache = [];
 
 
     /**
@@ -62,7 +62,7 @@ class ContentStream
                         break;
                     }
 
-                    $this->read[] = ord($character);
+                    $this->readBytesCache[] = ord($character);
                 }
             }
         } else {
@@ -91,7 +91,7 @@ class ContentStream
                 return false;
             }
 
-            if ($this->read[$offset + $i] !== $byte) {
+            if ($this->readBytesCache[$offset + $i] !== $byte) {
                 return false;
             }
         }
@@ -136,7 +136,7 @@ class ContentStream
                 if (is_string($byte)) {
                     $byte = ord($byte);
                 }
-                if ($this->read[$offset + $i + $j] !== $byte) {
+                if ($this->readBytesCache[$offset + $i + $j] !== $byte) {
                     continue 2;
                 }
             }
@@ -150,7 +150,7 @@ class ContentStream
 
     private function readOffset(int $offset): bool
     {
-        if (!isset($this->read[$offset])) {
+        if (!isset($this->readBytesCache[$offset])) {
             fseek($this->filePointer, $offset, SEEK_SET);
             $character = fgetc($this->filePointer);
 
@@ -158,7 +158,7 @@ class ContentStream
                 return false;
             }
 
-            $this->read[$offset] = ord($character);
+            $this->readBytesCache[$offset] = ord($character);
         }
 
         return true;
