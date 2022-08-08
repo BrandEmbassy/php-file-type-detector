@@ -166,7 +166,7 @@ class DetectorTest extends TestCase
 
     /**
      * This tests behavior of Detector on non-seekable streams (eg. HTTP), ZipArchive was used to simulate it locally
-     * The ZIP archive is supposed to contain all other fixtures (same names and content)
+     * Saves the files to a temporary ZIP archive, and reads it again to access the contents
      *
      * @dataProvider filePathDataProvider()
      */
@@ -176,11 +176,14 @@ class DetectorTest extends TestCase
         string $expectedExtension,
         string $expectedMimeType
     ): void {
-        $relativeFilePath = substr($filePath, strlen(__DIR__ . '/__fixtures__/'));
-
+        $zipArchiveName = tempnam(sys_get_temp_dir(), 'zip');
         $zipArchive = new ZipArchive();
-        $zipArchive->open(__DIR__ . '/__fixtures__/archive.zip');
-        $stream = $zipArchive->getStream($relativeFilePath);
+        $zipArchive->open($zipArchiveName, ZipArchive::CREATE);
+        $zipArchive->addFile($filePath, 'file');
+        $zipArchive->close();
+        $zipArchive->open($zipArchiveName);
+
+        $stream = $zipArchive->getStream('file');
 
         $streamMetaData = stream_get_meta_data($stream);
         Assert::assertFalse($streamMetaData['seekable']);
