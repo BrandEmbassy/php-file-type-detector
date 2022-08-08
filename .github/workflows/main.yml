@@ -22,7 +22,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: mbstring, sockets
 
       - name: Cache composer dependencies
         uses: actions/cache@v2
@@ -55,7 +54,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: mbstring, sockets
 
       - name: Cache composer dependencies
         uses: actions/cache@v2
@@ -93,7 +91,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: mbstring, sockets
 
       - name: Cache composer dependencies
         uses: actions/cache@v2
