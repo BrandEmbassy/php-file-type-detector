@@ -4,27 +4,15 @@ namespace BrandEmbassy\FileTypeDetector;
 
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use ZipArchive;
-use function array_map;
-use function assert;
-use function fclose;
-use function file_get_contents;
-use function fopen;
-use function fwrite;
-use function implode;
-use function is_resource;
-use function rewind;
 use function sprintf;
-use function stream_get_meta_data;
-use function sys_get_temp_dir;
-use function tempnam;
 
 class FileInfoTest extends TestCase
 {
     /**
      * @dataProvider extensionDataProvider()
      */
-    public function testFileInfoHasFileType(Extension $extension): void {
+    public function testFileInfoHasFileType(Extension $extension): void
+    {
         $fileInfo = new FileInfo($extension, true);
 
         Assert::assertNotNull(
@@ -33,10 +21,12 @@ class FileInfoTest extends TestCase
         );
     }
 
+
     /**
      * @dataProvider extensionDataProvider()
      */
-    public function testFileInfoHasMimeType(Extension $extension): void {
+    public function testFileInfoHasMimeType(Extension $extension): void
+    {
         $fileInfo = new FileInfo($extension, true);
 
         Assert::assertNotNull(
