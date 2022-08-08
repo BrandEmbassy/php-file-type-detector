@@ -9,36 +9,27 @@ class FileInfoTest extends TestCase
     /**
      * @dataProvider extensionDataProvider()
      */
-    public function testFileInfoHasFileType(Extension $extension): void
+    public function testFileInfoAlwaysHasAllAttributes(Extension $extension, bool $isCreatedFromFileName): void
     {
-        $fileInfo = new FileInfo($extension, true);
+        $fileInfo = new FileInfo($extension, $isCreatedFromFileName);
 
+        $fileInfo->getExtension();
         $fileInfo->getFileType();
-
-        $this->expectNotToPerformAssertions();
-    }
-
-
-    /**
-     * @dataProvider extensionDataProvider()
-     */
-    public function testFileInfoHasMimeType(Extension $extension): void
-    {
-        $fileInfo = new FileInfo($extension, true);
-
         $fileInfo->getMimeType();
+        $fileInfo->isCreatedFromFileName();
 
         $this->expectNotToPerformAssertions();
     }
 
 
     /**
-     * @return Extension[][]
+     * @return iterable<array<Extension|bool>>
      */
     public function extensionDataProvider(): iterable
     {
         foreach (Extension::getValues() as $value) {
-            yield [Extension::get($value)];
+            yield [Extension::get($value), true];
+            yield [Extension::get($value), false];
         }
     }
 }
