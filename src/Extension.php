@@ -239,7 +239,7 @@ class Extension extends Enum
     /**
      * @deprecated use getMimeType instead
      *
-     * @see        self::getMimeType()
+     * @see self::getMimeType()
      */
     public function findMimeType(): ?string
     {
