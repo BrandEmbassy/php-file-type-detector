@@ -286,7 +286,7 @@ class DetectorTest extends TestCase
                 'expectedMimeType' => 'application/pdf',
             ],
             'svg' => [
-                'filePath' => __DIR__ . '/__fixtures__/svg1.svg',
+                'filePath' => __DIR__ . '/__fixtures__/pacifier.svg',
                 'expectedFileType' => 'image',
                 'expectedExtension' => 'svg',
                 'expectedMimeType' => 'image/svg+xml',
