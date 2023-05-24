@@ -291,6 +291,12 @@ class DetectorTest extends TestCase
                 'expectedExtension' => 'svg',
                 'expectedMimeType' => 'image/svg+xml',
             ],
+            'svg without xml' => [
+                'filePath' => __DIR__ . '/__fixtures__/pacifierWithoutXml.svg',
+                'expectedFileType' => 'image',
+                'expectedExtension' => 'svg',
+                'expectedMimeType' => 'image/svg+xml',
+            ],
             'xml' => [
                 'filePath' => __DIR__ . '/__fixtures__/document.xml',
                 'expectedFileType' => 'document',
