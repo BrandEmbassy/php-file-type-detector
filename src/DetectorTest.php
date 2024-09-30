@@ -84,6 +84,12 @@ class DetectorTest extends TestCase
                 'expectedExtension' => Extension::VCF,
                 'expectedMimeType' => 'text/x-vcard',
             ],
+            'pkpass' => [
+                'fileName' => 'appleWallet.pkpass',
+                'expectedFileType' => FileType::APPLICATION,
+                'expectedExtension' => Extension::PKPASS,
+                'expectedMimeType' => 'application/vnd.apple.pkpass',
+            ],
         ];
     }
 

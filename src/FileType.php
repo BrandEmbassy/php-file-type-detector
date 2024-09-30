@@ -105,6 +105,7 @@ class FileType extends Enum
             Extension::COM,
             Extension::EXE,
             Extension::XAP,
+            Extension::PKPASS,
         ],
 
         self::PRESENTATION => [

@@ -98,6 +98,7 @@ class Extension extends Enum
     public const WEBM = 'webm';
     public const WEBP = 'webp';
     public const REG = 'reg';
+    public const PKPASS = 'pkpass';
 
     /**
      * @var string[]
@@ -113,6 +114,7 @@ class Extension extends Enum
         'mid' => self::MIDI,
         'svg' => self::SVG,
         'pem' => self::PEM,
+        'pkpass' => self::PKPASS,
     ];
 
     /**
@@ -214,6 +216,8 @@ class Extension extends Enum
         self::VCF => 'text/x-vcard',
 
         self::PEM => 'application/x-x509-ca-cert',
+
+        self::PKPASS => 'application/vnd.apple.pkpass',
     ];
 
 
