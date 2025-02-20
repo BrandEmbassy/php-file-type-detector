@@ -22,7 +22,7 @@
         "phpcbf": "./vendor/bin/phpcbf --standard=BrandEmbassyCodingStandard src --runtime-set php_version 70200",
         "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src --memory-limit=-1",
         "phpunit": "vendor/bin/phpunit src --no-coverage",
-        "phpunit-cc": "vendor/bin/phpunit src"
+        "phpunit-cc": "XDEBUG_MODE=coverage ./vendor/bin/phpunit src --coverage-clover=coverage.xml --log-junit=test-report.xml --whitelist src"
     },
     "config": {
         "allow-plugins": {

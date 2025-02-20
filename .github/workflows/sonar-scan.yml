@@ -1,0 +1,47 @@
+name: SonarQube-Scanning
+
+on:
+  push:
+    branches-ignore: [master]
+  workflow_dispatch:
+
+jobs:
+  phpunit-with-sonar-qube:
+    name: PHP Unit with Sonar Qube
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        composer-arg:
+          - "install"
+        php-version:
+          - 8.3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: zip
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer ${{ matrix.composer-arg }} --prefer-dist
+
+      - name: Run phpunit with code coverage
+        run: composer phpunit-cc
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: 'https://sonar.nice.com'
