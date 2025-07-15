@@ -33,6 +33,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          composer config --unset http://github-oauth.github.com || true
           composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
           composer install --prefer-dist
 
@@ -68,6 +69,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          composer config --unset http://github-oauth.github.com || true
           composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
           composer install --prefer-dist
 
@@ -108,6 +110,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          composer config --unset http://github-oauth.github.com || true
           composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
           composer ${{ matrix.composer-arg }} --prefer-dist
 
