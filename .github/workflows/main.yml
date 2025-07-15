@@ -32,7 +32,9 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist
+        run: |
+          composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
+          composer install --prefer-dist
 
       - name: Run phpstan
         run: composer phpstan
@@ -65,7 +67,9 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist
+        run: |
+          composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
+          composer install --prefer-dist
 
       - name: Run code-sniffer
         run: composer phpcs
@@ -103,7 +107,9 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer ${{ matrix.composer-arg }} --prefer-dist
+        run: |
+          composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
+          composer ${{ matrix.composer-arg }} --prefer-dist
 
       - name: Run tests
         run: composer phpunit
