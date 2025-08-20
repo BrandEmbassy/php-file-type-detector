@@ -14,7 +14,7 @@
     },
     "require-dev": {
         "brandembassy/coding-standard": "^8.1",
-        "phpunit/phpunit": "^8.5.39",
+        "phpunit/phpunit": "^8.5.39 || ^9.6",
         "ext-zip": "*"
     },
     "scripts": {
