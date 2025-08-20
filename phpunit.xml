@@ -6,6 +6,7 @@
   </testsuites>
 
   <logging>
+    <log type="coverage-clover" target="coverage.xml"/>
     <log type="coverage-html" target="./var/code-coverage" lowUpperBound="50" highLowerBound="80"/>
   </logging>
 
