@@ -14,7 +14,7 @@
     },
     "require-dev": {
         "brandembassy/coding-standard": "^8.1",
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^8.5.39 || ^9.6",
         "ext-zip": "*"
     },
     "scripts": {
@@ -22,7 +22,8 @@
         "phpcbf": "./vendor/bin/phpcbf --standard=BrandEmbassyCodingStandard src --runtime-set php_version 70200",
         "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src --memory-limit=-1",
         "phpunit": "vendor/bin/phpunit src --no-coverage",
-        "phpunit-cc": "vendor/bin/phpunit src"
+        "phpunit-cc": "vendor/bin/phpunit src",
+        "phpunit-with-cc": "vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit=test-report.xml"
     },
     "config": {
         "allow-plugins": {
