@@ -7,24 +7,12 @@ namespace BrandEmbassy\FileTypeDetector;
  */
 class FileInfo
 {
-    /**
-     * @var Extension
-     */
     private Extension $extension;
 
-    /**
-     * @var FileType
-     */
     private FileType $fileType;
 
-    /**
-     * @var string
-     */
     private string $mimeType;
 
-    /**
-     * @var bool
-     */
     private bool $isCreatedFromFileName;
 
 

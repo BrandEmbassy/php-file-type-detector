@@ -25,14 +25,8 @@ use const SEEK_SET;
 
 class ContentStream
 {
-    /**
-     * @var bool
-     */
     protected bool $openedOutside = false;
 
-    /**
-     * @var bool
-     */
     protected bool $cachedAllBytes = false;
 
     /**
