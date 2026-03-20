@@ -28,22 +28,22 @@ class ContentStream
     /**
      * @var bool
      */
-    protected $openedOutside = false;
+    protected bool $openedOutside = false;
 
     /**
      * @var bool
      */
-    protected $cachedAllBytes = false;
+    protected bool $cachedAllBytes = false;
 
     /**
      * @var resource
      */
-    protected $filePointer;
+    protected mixed $filePointer;
 
     /**
      * @var int[]
      */
-    protected $readBytesCache = [];
+    protected array $readBytesCache = [];
 
 
     /**

@@ -10,22 +10,22 @@ class FileInfo
     /**
      * @var Extension
      */
-    private $extension;
+    private Extension $extension;
 
     /**
      * @var FileType
      */
-    private $fileType;
+    private FileType $fileType;
 
     /**
      * @var string
      */
-    private $mimeType;
+    private string $mimeType;
 
     /**
      * @var bool
      */
-    private $isCreatedFromFileName;
+    private bool $isCreatedFromFileName;
 
 
     public function __construct(Extension $extension, bool $isCreatedFromFileName)
