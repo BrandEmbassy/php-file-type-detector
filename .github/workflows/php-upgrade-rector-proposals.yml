@@ -57,14 +57,8 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist
 
-      - name: Install Rector if not present
-        run: |
-          if [ -f vendor/bin/rector ]; then
-            echo "Rector already installed in vendor"
-          else
-            echo "Rector not found in vendor, installing..."
-            composer require --dev rector/rector:"^2.0" --with-all-dependencies --no-interaction
-          fi
+      - name: Verify Rector is available
+        run: vendor/bin/rector --version
 
       - name: Generate temporary Rector configuration
         run: |

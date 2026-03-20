@@ -13,8 +13,8 @@
         "marc-mabe/php-enum": "^3.1 || ^4.2"
     },
     "require-dev": {
-        "brandembassy/coding-standard": "^8.1",
-        "phpunit/phpunit": "^8.5.39 || ^9.6",
+        "brandembassy/coding-standard": "^14.0",
+        "phpunit/phpunit": "^10.5",
         "ext-zip": "*"
     },
     "scripts": {
