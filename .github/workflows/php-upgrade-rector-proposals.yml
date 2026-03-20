@@ -11,8 +11,84 @@ on:
 
 jobs:
   rector-php-upgrade:
-    uses: BrandEmbassy/github-actions/.github/workflows/php-upgrade-rector-proposals.yml@master
-    with:
-      PHP_TARGET_VERSION: ${{ inputs.PHP_TARGET_VERSION }}
-    secrets:
-      COMPOSER_TOKEN: ${{ secrets.COMPOSER_TOKEN }}
+    name: Rector PHP Upgrade Proposals (PHP ${{ inputs.PHP_TARGET_VERSION }})
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect source PHP version and extensions from composer.json
+        id: composer-meta
+        run: |
+          php_constraint=$(jq -r '.require.php // empty' composer.json)
+          if [ -z "$php_constraint" ]; then
+            echo "::error::No php requirement found in composer.json"
+            exit 1
+          fi
+          source_version=$(echo "$php_constraint" | grep -oE '[0-9]+\.[0-9]+' | head -1)
+          echo "source_version=$source_version" >> $GITHUB_OUTPUT
+          echo "Detected source PHP version: $source_version (from constraint: $php_constraint)"
+
+          extensions=$(jq -r '.require | keys[] | select(startswith("ext-")) | sub("ext-"; "")' composer.json | paste -sd, -)
+          echo "extensions=$extensions" >> $GITHUB_OUTPUT
+          echo "Detected extensions: $extensions"
+
+      - name: Setup PHP ${{ steps.composer-meta.outputs.source_version }}
+        uses: shivammathur/setup-php@2.35.1
+        with:
+          php-version: ${{ steps.composer-meta.outputs.source_version }}
+          extensions: ${{ steps.composer-meta.outputs.extensions }}
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Configure composer token
+        run: composer config github-oauth.github.com "${{ secrets.COMPOSER_TOKEN }}"
+
+      - name: Install dependencies
+        run: composer install --no-progress --prefer-dist
+
+      - name: Verify Rector is available
+        run: vendor/bin/rector --version
+
+      - name: Generate temporary Rector configuration
+        run: |
+          PHP_SET_ARG="php${{ inputs.PHP_TARGET_VERSION }}"
+          PHP_SET_ARG="${PHP_SET_ARG//.}"
+          SOURCE="${{ steps.composer-meta.outputs.source_version }}"
+          PHP_VERSION_CONST="PHP_${SOURCE//.}"
+
+          cat > rector-php-upgrade.php <<RECTOR_EOF
+          <?php
+
+          declare(strict_types=1);
+
+          use Rector\Config\RectorConfig;
+          use Rector\ValueObject\PhpVersion;
+
+          return RectorConfig::configure()
+              ->withPhpSets(${PHP_SET_ARG}: true)
+              ->withPhpVersion(PhpVersion::${PHP_VERSION_CONST})
+              ->withPaths([
+                  __DIR__ . '/src',
+              ]);
+          RECTOR_EOF
+
+          echo "Generated rector-php-upgrade.php:"
+          cat rector-php-upgrade.php
+
+      - name: Run Rector (dry-run)
+        run: |
+          vendor/bin/rector process --config rector-php-upgrade.php --dry-run --ansi || EXIT_CODE=$?
+          if [ "${EXIT_CODE:-0}" -ne 0 ] && [ "${EXIT_CODE:-0}" -ne 2 ]; then
+            exit "$EXIT_CODE"
+          fi

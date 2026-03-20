@@ -103,7 +103,7 @@ class Extension extends Enum
     /**
      * @var string[]
      */
-    private static $aliases = [
+    private static array $aliases = [
         'jpg' => self::JPEG,
         'tif' => self::TIFF,
         'mpg' => self::MPEG,
@@ -120,7 +120,7 @@ class Extension extends Enum
     /**
      * @var string[]
      */
-    public static $mimeTypes = [
+    public static array $mimeTypes = [
         self::JPEG => 'image/jpeg',
         self::BMP => 'image/bmp',
         self::GIF => 'image/gif',
@@ -249,7 +249,7 @@ class Extension extends Enum
      *
      * @see self::getMimeType()
      */
-    public function findMimeType(): ?string
+    public function findMimeType(): string
     {
         @trigger_error(sprintf('Method %s is deprecated.', __METHOD__), E_USER_DEPRECATED);
 

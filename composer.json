@@ -9,20 +9,20 @@
         }
     },
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^8.2",
         "marc-mabe/php-enum": "^3.1 || ^4.2"
     },
     "require-dev": {
-        "brandembassy/coding-standard": "^8.1",
-        "phpunit/phpunit": "^8.5.39 || ^9.6",
+        "brandembassy/coding-standard": "^14.0",
+        "phpunit/phpunit": "^10.5",
         "ext-zip": "*"
     },
     "scripts": {
-        "phpcs": "./vendor/bin/phpcs --standard=BrandEmbassyCodingStandard src --runtime-set php_version 70200",
-        "phpcbf": "./vendor/bin/phpcbf --standard=BrandEmbassyCodingStandard src --runtime-set php_version 70200",
+        "phpcs": "./vendor/bin/ecs check src --ansi",
+        "phpcbf": "./vendor/bin/ecs check src --fix --ansi",
         "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src --memory-limit=-1",
-        "phpunit": "vendor/bin/phpunit src --no-coverage",
-        "phpunit-cc": "vendor/bin/phpunit src",
+        "phpunit": "vendor/bin/phpunit --no-coverage",
+        "phpunit-cc": "vendor/bin/phpunit",
         "phpunit-with-cc": "vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit=test-report.xml"
     },
     "config": {

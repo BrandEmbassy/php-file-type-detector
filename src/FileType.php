@@ -35,7 +35,7 @@ class FileType extends Enum
     /**
      * @var string[][]
      */
-    private static $extensionsMap = [
+    private static array $extensionsMap = [
         self::IMAGE => [
             Extension::JPEG,
             Extension::BMP,
@@ -183,7 +183,7 @@ class FileType extends Enum
      *
      * @see self::getByExtension()
      */
-    public function findByExtension(Extension $extension): ?self
+    public function findByExtension(Extension $extension): self
     {
         @trigger_error(sprintf('Method %s is deprecated.', __METHOD__), E_USER_DEPRECATED);
 
