@@ -97,7 +97,7 @@ class DetectorTest extends TestCase
     /**
      * @dataProvider binaryStreamDataProvider()
      *
-     * @param mixed[] $binary
+     * @param int[] $binary
      */
     public function testDetectionByContent(
         array $binary,

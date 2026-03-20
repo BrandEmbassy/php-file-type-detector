@@ -14,8 +14,8 @@ class FileInfoTest extends TestCase
     {
         $fileInfo = new FileInfo($extension, $isCreatedFromFileName);
 
-        Assert::assertInstanceOf(Extension::class, $fileInfo->getExtension());
-        Assert::assertInstanceOf(FileType::class, $fileInfo->getFileType());
+        Assert::assertSame($extension, $fileInfo->getExtension());
+        Assert::assertNotEmpty($fileInfo->getFileType()->getValue());
         Assert::assertNotEmpty($fileInfo->getMimeType());
         Assert::assertSame($isCreatedFromFileName, $fileInfo->isCreatedFromFileName());
     }
