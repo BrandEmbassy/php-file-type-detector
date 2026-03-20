@@ -35,7 +35,7 @@ class FileType extends Enum
     /**
      * @var string[][]
      */
-    private static $extensionsMap = [
+    private static array $extensionsMap = [
         self::IMAGE => [
             Extension::JPEG,
             Extension::BMP,

@@ -18,7 +18,7 @@ class Detector
     /**
      * @var mixed[]
      */
-    private static $signatures = [
+    private static array $signatures = [
         // Images signatures
         Extension::JPEG => [
             [0 => [0xFF, 0xD8, 0xFF, 0xE0]],
@@ -683,7 +683,7 @@ class Detector
                             $offset,
                             $andSignature['bytes'],
                             $andSignature['depth'] ?? 512,
-                            $andSignature['reverse'] ?? false
+                            $andSignature['reverse'] ?? false,
                         ) === false) {
                             $passed = false;
                             break;
