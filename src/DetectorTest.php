@@ -108,7 +108,7 @@ class DetectorTest extends TestCase
         $filePointer = fopen('php://temp', 'rb+');
         assert(is_resource($filePointer));
 
-        $binary = implode('', array_map('chr', $binary));
+        $binary = implode('', array_map(static fn(int $byte): string => chr($byte), $binary));
 
         fwrite($filePointer, $binary);
         rewind($filePointer);

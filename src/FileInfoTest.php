@@ -2,6 +2,7 @@
 
 namespace BrandEmbassy\FileTypeDetector;
 
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class FileInfoTest extends TestCase
@@ -13,12 +14,10 @@ class FileInfoTest extends TestCase
     {
         $fileInfo = new FileInfo($extension, $isCreatedFromFileName);
 
-        $fileInfo->getExtension();
-        $fileInfo->getFileType();
-        $fileInfo->getMimeType();
-        $fileInfo->isCreatedFromFileName();
-
-        $this->expectNotToPerformAssertions();
+        Assert::assertInstanceOf(Extension::class, $fileInfo->getExtension());
+        Assert::assertInstanceOf(FileType::class, $fileInfo->getFileType());
+        Assert::assertNotEmpty($fileInfo->getMimeType());
+        Assert::assertSame($isCreatedFromFileName, $fileInfo->isCreatedFromFileName());
     }
 
 

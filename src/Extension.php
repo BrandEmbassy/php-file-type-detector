@@ -249,7 +249,7 @@ class Extension extends Enum
      *
      * @see self::getMimeType()
      */
-    public function findMimeType(): ?string
+    public function findMimeType(): string
     {
         @trigger_error(sprintf('Method %s is deprecated.', __METHOD__), E_USER_DEPRECATED);
 
