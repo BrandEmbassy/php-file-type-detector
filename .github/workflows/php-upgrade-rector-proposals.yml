@@ -6,7 +6,7 @@ on:
       PHP_TARGET_VERSION:
         required: true
         type: string
-        description: 'Target PHP version (e.g. 8.4)'
+        description: 'Target PHP version to fix breaking changes for (e.g. 8.4)'
         default: '8.4'
 
 jobs:
@@ -18,26 +18,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Detect source PHP version and extensions from composer.json
+      - name: Detect extensions from composer.json
         id: composer-meta
         run: |
-          php_constraint=$(jq -r '.require.php // empty' composer.json)
-          if [ -z "$php_constraint" ]; then
-            echo "::error::No php requirement found in composer.json"
-            exit 1
-          fi
-          source_version=$(echo "$php_constraint" | grep -oE '[0-9]+\.[0-9]+' | head -1)
-          echo "source_version=$source_version" >> $GITHUB_OUTPUT
-          echo "Detected source PHP version: $source_version (from constraint: $php_constraint)"
-
+          # Extract required extensions
           extensions=$(jq -r '.require | keys[] | select(startswith("ext-")) | sub("ext-"; "")' composer.json | paste -sd, -)
           echo "extensions=$extensions" >> $GITHUB_OUTPUT
           echo "Detected extensions: $extensions"
 
-      - name: Setup PHP ${{ steps.composer-meta.outputs.source_version }}
+      - name: Setup PHP ${{ inputs.PHP_TARGET_VERSION }}
         uses: shivammathur/setup-php@2.35.1
         with:
-          php-version: ${{ steps.composer-meta.outputs.source_version }}
+          php-version: ${{ inputs.PHP_TARGET_VERSION }}
           extensions: ${{ steps.composer-meta.outputs.extensions }}
 
       - name: Get composer cache directory
@@ -52,20 +44,31 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Configure composer token
-        run: composer config github-oauth.github.com "${{ secrets.COMPOSER_TOKEN }}"
+        env:
+          COMPOSER_TOKEN: ${{ secrets.COMPOSER_TOKEN }}
+        run: composer config github-oauth.github.com "$COMPOSER_TOKEN"
 
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist
 
-      - name: Verify Rector is available
-        run: vendor/bin/rector --version
+      - name: Install Rector if not present
+        run: |
+          if [ -f vendor/bin/rector ]; then
+            echo "Rector already installed in vendor"
+          else
+            echo "Rector not found in vendor, installing..."
+            composer require --dev rector/rector --with-all-dependencies --no-interaction
+          fi
 
       - name: Generate temporary Rector configuration
+        env:
+          TARGET: ${{ inputs.PHP_TARGET_VERSION }}
         run: |
-          PHP_SET_ARG="php${{ inputs.PHP_TARGET_VERSION }}"
-          PHP_SET_ARG="${PHP_SET_ARG//.}"
-          SOURCE="${{ steps.composer-meta.outputs.source_version }}"
-          PHP_VERSION_CONST="PHP_${SOURCE//.}"
+          # Build the withPhpSets argument: "8.4" -> "php84"
+          PHP_SET_ARG="php${TARGET//.}"
+
+          # Build the withPhpVersion constant: "8.4" -> "PHP_84"
+          PHP_VERSION_CONST="PHP_${TARGET//.}"
 
           cat > rector-php-upgrade.php <<RECTOR_EOF
           <?php
@@ -75,6 +78,8 @@ jobs:
           use Rector\Config\RectorConfig;
           use Rector\ValueObject\PhpVersion;
 
+          // Rector proposals for upgrading to PHP ${TARGET}.
+          // Loads rules and constrains output to PHP ${TARGET}.
           return RectorConfig::configure()
               ->withPhpSets(${PHP_SET_ARG}: true)
               ->withPhpVersion(PhpVersion::${PHP_VERSION_CONST})
@@ -88,7 +93,19 @@ jobs:
 
       - name: Run Rector (dry-run)
         run: |
-          vendor/bin/rector process --config rector-php-upgrade.php --dry-run --ansi || EXIT_CODE=$?
-          if [ "${EXIT_CODE:-0}" -ne 0 ] && [ "${EXIT_CODE:-0}" -ne 2 ]; then
-            exit "$EXIT_CODE"
+          # --dry-run proposes changes without modifying files
+          # Exit code 0 = no changes, 2 = changes would be made (both OK)
+          # Any other exit code (including 1) indicates an error
+          vendor/bin/rector process --config rector-php-upgrade.php --dry-run 2>&1 | tee rector-output.txt
+          exit_code=${PIPESTATUS[0]}
+          if [ "$exit_code" -ne 0 ] && [ "$exit_code" -ne 2 ]; then
+            exit "$exit_code"
           fi
+
+      - name: Upload Rector proposals
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rector-proposals
+          path: rector-output.txt
+          retention-days: 30
